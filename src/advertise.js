@@ -2,35 +2,32 @@
 'use strict';
 
 let bleno = require('bleno');
-var BlenoPrimaryService = bleno.PrimaryService;
-
-console.log("Start advertise.js \n");
+let BlenoPrimaryService = bleno.PrimaryService;
 
 let stateListener = function(state){
-  console.log("state changed to", state);
+    console.log("[advertise] state changed to", state);
 
-  if(state === 'poweredOn'){
-    bleno.startAdvertising('echo', ['ec00']);
-  }
-  else {
-    bleno.stopAdvertising();
-  }
+    if(state === 'poweredOn'){
+        bleno.startAdvertising('echo', ['ec00']);
+    }
+    else {
+        bleno.stopAdvertising();
+    }
 };
 
 let startAdvertise = function(error) {
-  console.log('on -> advertisingStart: ' + (error ? 'error ' + error : 'success'));
+    console.log('on -> advertisingStart: ' + (error ? 'error ' + error : 'success'));
 
-  if (!error) {
-    bleno.setServices([
-      new BlenoPrimaryService({
-        uuid: 'ec00',
-        characteristics: [
+    if (!error) {
+        bleno.setServices([
+            new BlenoPrimaryService({
+                uuid: 'ec00',
+                characteristics: []
+            })
+        ]);
+    }
+};
 
-        ]
-      })
-    ]);
-  }
-}
-
+console.log("[advertise] start \n");
 bleno.on('stateChange', stateListener);
 bleno.on('advertisingStart', startAdvertise);

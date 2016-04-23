@@ -3,38 +3,40 @@
 
 let noble = require('noble');
 
-console.log("Start discover.js \n");
-
 let stateListener = function(state){
-  console.log("state changed to", state);
+  console.log("[discover] state changed to", state);
 
   if(state === 'poweredOn'){
-    noble.startScanning();
+      noble.startScanning();
   }
   else {
-    noble.stopScanning();
+      noble.stopScanning();
   }
 };
 
 let discoverHandler = function(peripheral) {
-  console.log("peripheral discovered:");
-  console.log("id \t\t" + peripheral.id + "\n" +
-              "address \t" + peripheral.address + "\n" +
-              "name \t" + peripheral.advertisement.localName + "\n" +
-              "services \t" + peripheral.advertisement.serviceUuids
-  );
-  console.log();
+    console.log("\n[discover] peripheral discovered: \n");
+    console.log("[peripheral] id \t"        + peripheral.id + "\n" +
+                "[peripheral] address \t"   + peripheral.address + "\n" +
+                "[peripheral] name \t"      + peripheral.advertisement.localName + "\n" +
+                "[peripheral] services \t"  + peripheral.advertisement.serviceUuids + "\n" +
+                "[peripheral] object \n"    + peripheral
+    );
+
+    console.log();
 };
 
 let startScanner = function(start) {
-  console.log("scan started");
+    console.log("[discover] scan started");
 }
 
 let stopScanner = function(stop) {
-  console.log("scan stopped");
+    console.log("[discover] scan stopped");
 }
 
 
+
+console.log("[discover] start");
 noble.on('stateChange', stateListener);
 noble.on('discover', discoverHandler);
 noble.on('scanStart', startScanner);
