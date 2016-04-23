@@ -1,0 +1,15 @@
+{
+  "name": "wot_with_ble_experiment",
+  "authors": [
+    "Jonas Rook <jonas.rook@fokus.fraunhofer.de>",
+    "Louay Bassbouss <louay.bassbouss@fokus.fraunhofer.de>"
+  ],
+  "version": "0.0.1",
+  "description": "This is the first experiment with WoT and Bluetooth low energy",
+  "license": "...",
+  "dependencies": {
+    "bleno": "^0.4.0",
+    "noble": "^1.4.0"
+  },
+  "devDependencies": {}
+}
