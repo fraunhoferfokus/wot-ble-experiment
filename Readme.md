@@ -6,11 +6,11 @@
 ### Usage ###
 1. start advertising custom BLE peripheral
 ```sh
-node src\main
+node src/main
 ```
 
 2. use a BLE Scanner or noble to interact with it
 
 #### Contributors: ####
-Jonas Rook
+Jonas Rook, 
 Louay Bassbouss
