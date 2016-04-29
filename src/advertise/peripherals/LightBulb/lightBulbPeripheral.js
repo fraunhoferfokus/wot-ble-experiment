@@ -5,6 +5,7 @@ let bleno = require('bleno');
 
 // require all services here
 let MetaService = require('./MetaService/metaService');
+let SwitchService = require('./SwitchService/switchService');
 
 class LightBulbPeripheral
 {
@@ -16,7 +17,7 @@ class LightBulbPeripheral
         // list all servies here
         this.services = [
             new MetaService(),
-
+            new SwitchService(),
         ]
 
         // extract all service uuids for advertising
@@ -42,6 +43,7 @@ class LightBulbPeripheral
         if(state === 'poweredOn')
         {
             console.log("[advertise] start advertising");
+
             bleno.startAdvertising(this.name, this.servicesUUIDs);
         }
         else
