@@ -4,26 +4,27 @@
 let bleno = require('bleno');
 
 // require all services here
+let MetaService = require('./MetaService/metaService');
 
 class LightBulbPeripheral
 {
     constructor(name)
     {
         console.log('[LightBulb] create', name)
+        this.name = name;
 
-        let self = this;
-        self.name = name;
-        self.servicesUUIDs = [
-            // list all service UUIDs here
+        // list all servies here
+        this.services = [
+            new MetaService(),
+
         ]
 
-        self.services = [
-            // list all servies here
-        ]
+        // extract all service uuids for advertising
+        this.servicesUUIDs = this.extractUUIDs(this.services);
 
         // register listeners
-        bleno.on('stateChange', self.stateListener);
-        bleno.on('advertisingStart', self.startAdvertise);
+        bleno.on('stateChange', this.stateListener.bind(this));
+        bleno.on('advertisingStart', this.startAdvertise.bind(this));
 
         bleno.on('advertisingStartError', function(error) {
             console.log('[advertise] advertisingStart: ' + (error ? ' error' + error : 'success'));
@@ -41,7 +42,7 @@ class LightBulbPeripheral
         if(state === 'poweredOn')
         {
             console.log("[advertise] start advertising");
-            //bleno.startAdvertising(this.name, this.servicesUUIDs);
+            bleno.startAdvertising(this.name, this.servicesUUIDs);
         }
         else
         {
@@ -52,8 +53,21 @@ class LightBulbPeripheral
 
     startAdvertise(error)
     {
-        if (!error)
+        if (!error){
+            console.log("[advertise] set services")
             bleno.setServices(this.services);
+        }
+    }
+
+    extractUUIDs(services){
+        let uuids = []
+
+        for(let service of services){
+            if(service.uuid)
+                uuids.push(service.uuid)
+        }
+
+        return uuids;
     }
 }
 
