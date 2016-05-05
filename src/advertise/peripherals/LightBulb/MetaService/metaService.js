@@ -5,7 +5,7 @@ let bleno = require('bleno');
 
 // define all characteristics here
 let ManufacturerCharacteristic = require('./manufacturerCharacteristic');
-let SoftwareRevisionCharacteristic = require('./SoftwareRevisionCharacteristic');
+let SoftwareRevisionCharacteristic = require('./softwareRevisionCharacteristic');
 
 
 class MetaService extends bleno.PrimaryService {
