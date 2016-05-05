@@ -5,14 +5,18 @@ let noble = require('noble');
 
 class Discover {
     constructor(){
-        noble.on('stateChange', this.stateListener)
+        noble.on('stateChange', this.stateListener.bind(this))
+        noble.on('discover', this.discoverHandler);
+        noble.on('scanStart', this.onStartScanner);
+        noble.on('scanStop', this.onStopScanner);
     }
 
     stateListener(state){
         console.log("[discover] state changed to", state);
 
         if(state === 'poweredOn'){
-            noble.startScanning();
+            this.startScanning([], true)
+            //noble.startScanning();
         }
         else {
             noble.stopScanning();
@@ -22,6 +26,26 @@ class Discover {
     startScanning(serviceUUIDs, allowDuplicates){
         console.log('[discover] scan services')
         noble.startScanning(serviceUUIDs, allowDuplicates)
+    }
+
+    discoverHandler(peripheral) {
+        console.log("\n[discover] peripheral discovered: \n");
+        console.log("[peripheral] id \t"        + peripheral.id + "\n" +
+                    "[peripheral] address \t"   + peripheral.address + "\n" +
+                    "[peripheral] name \t"      + peripheral.advertisement.localName + "\n" +
+                    "[peripheral] services \t"  + peripheral.advertisement.serviceUuids + "\n" +
+                    "[peripheral] object \n"    + peripheral
+        );
+
+        console.log();
+    }
+
+    onStartScanner = function(start) {
+        console.log("[discover] scan started");
+    }
+
+    onStopScanner = function(stop) {
+        console.log("[discover] scan stopped");
     }
 
     get state(){
@@ -36,8 +60,8 @@ class Discover {
 
 module.exports = Discover;
 
-/*
 
+/*
 let stateListener = function(state){
   console.log("[discover] state changed to", state);
 
@@ -68,8 +92,6 @@ let startScanner = function(start) {
 let stopScanner = function(stop) {
     console.log("[discover] scan stopped");
 }
-
-
 
 console.log("[discover] start");
 noble.on('stateChange', stateListener);
