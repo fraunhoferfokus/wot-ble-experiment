@@ -40,11 +40,11 @@ class Discover {
         console.log();
     }
 
-    onStartScanner = function(start) {
+    onStartScanner(start) {
         console.log("[discover] scan started");
     }
 
-    onStopScanner = function(stop) {
+    onStopScanner(stop) {
         console.log("[discover] scan stopped");
     }
 
