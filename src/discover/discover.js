@@ -3,6 +3,41 @@
 
 let noble = require('noble');
 
+class Discover {
+    constructor(){
+        noble.on('stateChange', this.stateListener)
+    }
+
+    stateListener(state){
+        console.log("[discover] state changed to", state);
+
+        if(state === 'poweredOn'){
+            noble.startScanning();
+        }
+        else {
+            noble.stopScanning();
+        }
+    }
+
+    startScanning(serviceUUIDs, allowDuplicates){
+        console.log('[discover] scan services')
+        noble.startScanning(serviceUUIDs, allowDuplicates)
+    }
+
+    get state(){
+        return noble.state
+    }
+
+    set state(state){
+        noble.state = state
+    }
+
+}
+
+module.exports = Discover;
+
+/*
+
 let stateListener = function(state){
   console.log("[discover] state changed to", state);
 
@@ -41,3 +76,4 @@ noble.on('stateChange', stateListener);
 noble.on('discover', discoverHandler);
 noble.on('scanStart', startScanner);
 noble.on('scanStop', stopScanner);
+*/
