@@ -14,6 +14,8 @@ class SwitchService extends bleno.PrimaryService {
                 new PowerCharacteristic()
             ]
         })
+
+        console.log('[SwitchService] created')
     }
 
 }

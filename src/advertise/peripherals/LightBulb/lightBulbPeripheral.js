@@ -71,6 +71,14 @@ class LightBulbPeripheral
 
         return uuids;
     }
+
+    get state(){
+        return bleno.state
+    }
+
+    set state(state){
+        bleno.state = state
+    }
 }
 
 module.exports = LightBulbPeripheral;

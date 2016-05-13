@@ -23,7 +23,7 @@ class MetaService extends bleno.PrimaryService {
             ]
         })
 
-        //console.log('[MetaService] created')
+        console.log('[MetaService] created')
     }
 
 }
