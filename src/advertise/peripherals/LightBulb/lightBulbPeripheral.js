@@ -77,6 +77,7 @@ class LightBulbPeripheral
     }
 
     set state(state){
+        console.log('[LightBulb] set bleno to ', state)
         bleno.state = state
     }
 }
