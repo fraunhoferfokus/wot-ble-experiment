@@ -16,7 +16,9 @@ class MetaService extends bleno.PrimaryService {
             // idea of this uuid structure 'F_00_00_01' - #
             // F marks the beginning; two zeros as counter for the services;
             // two zeros as counter for the characteristics; two zeros as counter for the descriptors
-            uuid: '111111111F010000',
+            //uuid: '7777777777777777-111111111-F010000',
+            uuid: 'f100',
+
             characteristics: [
                 new ManufacturerCharacteristic(),
                 new SoftwareRevisionCharacteristic()

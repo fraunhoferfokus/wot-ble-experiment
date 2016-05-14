@@ -4,19 +4,19 @@
 let bleno = require('bleno');
 
 let powerDescriptor = new bleno.Descriptor({
-    uuid: '1111111111111111111111111F020101',
+    uuid: '7777777777777777-111111111-F020101',
     value:'To control the power of this sensor'
 });
 
 let stateDescriptor = new bleno.Descriptor({
-    uuid: '1111111111111111111111111F020102',
+    uuid: '7777777777777777-111111111-F020102',
     value: "['on', 'off']"
 });
 
 class PowerCharacteristic extends bleno.Characteristic {
     constructor(){
         super({
-            uuid: '1111111111111111111111111F020100',
+            uuid: '7777777777777777-111111111-F020100',
             properties: ['read', 'write', 'notify'],
             descriptors: [
                 powerDescriptor,

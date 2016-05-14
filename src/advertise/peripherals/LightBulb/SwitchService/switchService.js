@@ -9,7 +9,9 @@ let PowerCharacteristic = require('./powerCharacteristic');
 class SwitchService extends bleno.PrimaryService {
     constructor(){
         super({
-            uuid: '111111111F020000',
+            //uuid: '7777777777777777-111111111-F020000',
+            uuid: 'f200',
+
             characteristics: [
                 new PowerCharacteristic()
             ]

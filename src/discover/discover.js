@@ -6,7 +6,7 @@ let noble = require('noble');
 class Discover {
     constructor(){
         noble.on('stateChange', this.stateListener.bind(this))
-        noble.on('discover', this.discoverHandler);
+        noble.once('discover', this.discoverHandler);
         noble.on('scanStart', this.onStartScanner);
         noble.on('scanStop', this.onStopScanner);
     }

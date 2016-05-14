@@ -4,14 +4,14 @@
 let bleno = require('bleno');
 
 let softwareRevisionDescriptor = new bleno.Descriptor({
-    uuid: '111111111F010201',
+    uuid: '7777777777777777-111111111-F010201',
     value:'This characteristic represents the code version'
 });
 
 class SoftwareRevisionCharacteristic extends bleno.Characteristic {
     constructor(){
         super({
-            uuid: '111111111F010200',
+            uuid: '7777777777777777-111111111-F010200',
             properties: ['read'],
             descriptors: [
                 softwareRevisionDescriptor
