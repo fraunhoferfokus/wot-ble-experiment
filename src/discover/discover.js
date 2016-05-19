@@ -6,7 +6,7 @@ let noble = require('noble');
 class Discover {
     constructor(){
         noble.on('stateChange', this.stateListener.bind(this))
-        noble.once('discover', this.discoverHandler);
+        noble.once('discover', this.onDiscover.bind(this))
         noble.on('scanStart', this.onStartScanner);
         noble.on('scanStop', this.onStopScanner);
     }
@@ -16,7 +16,6 @@ class Discover {
 
         if(state === 'poweredOn'){
             this.startScanning([], true)
-            //noble.startScanning();
         }
         else {
             noble.stopScanning();
@@ -25,19 +24,94 @@ class Discover {
 
     startScanning(serviceUUIDs, allowDuplicates){
         console.log('[discover] scan services')
+
         noble.startScanning(serviceUUIDs, allowDuplicates)
     }
 
-    discoverHandler(peripheral) {
-        console.log("\n[discover] peripheral discovered: \n");
-        console.log("[peripheral] id \t"        + peripheral.id + "\n" +
-                    "[peripheral] address \t"   + peripheral.address + "\n" +
-                    "[peripheral] name \t"      + peripheral.advertisement.localName + "\n" +
-                    "[peripheral] services \t"  + peripheral.advertisement.serviceUuids + "\n" +
-                    "[peripheral] object \n"    + peripheral
-        );
+    onDiscover(peripheral) {
+        noble.stopScanning();
 
-        console.log();
+        this.peripheral = peripheral
+        let self = this
+
+        this.printPeripheralInformations(peripheral)
+        this.connectToPeripheral(this.peripheral)
+            .then(function(peripheral){
+                console.log('[discover] connected with ', peripheral.advertisement.localName)
+                //console.log('[discover] peripheral after connect ', peripheral)
+                //return peripheral
+            })
+            .then(function(){
+                //console.log('[discover] try to discover')
+                //self.discoverServices(self.peripheral)
+                self.discoverEverything(peripheral)
+            })
+    }
+
+    connectToPeripheral(peripheral){
+        console.log('[discover] connect to ' + peripheral.advertisement.localName)
+
+        let promise = new Promise(function(resolve, reject){
+            peripheral.connect(function(error){
+                if(error)
+                    throw error;
+                else
+                    resolve(peripheral)
+            })
+        })
+
+        return promise
+    }
+
+    discoverServices(peripheral, uuids){
+        console.log('[discoverServices] discover services ' + (uuids != undefined ? uuids : 'all'))
+
+        let serviceUUIDS = uuids || []
+        let promise = new Promise(function(resolve, reject){
+            peripheral.discoverServices(serviceUUIDS, function(error, services){
+                if(!error){
+                    services.forEach(function(service){
+                        if(service.uuid != 1800 && service.uuid != 1801)
+                            console.log('[discoverServices] ', service)
+                    })
+                }
+                else
+                    throw error
+
+            })
+            //console.log(peripheral)
+        })
+
+        return promise
+    }
+
+    discoverEverything(peripheral){
+        console.log('[discover] discover all services and characteristics from ' + peripheral.advertisement.localName)
+
+        let promise = new Promise(function(resolve, reject){
+            peripheral.discoverAllServicesAndCharacteristics(function(error, services, characteristics){
+                if(!error){
+                    console.log('[discover] everything discovered')
+                    console.log('[discover] services: ', services.length)
+                    console.log('[discover] characteristics: ', characteristics.length + '\n')
+
+                    console.log('[Services]')
+                    services.forEach(function(service){
+                        console.log('[S ' + service.uuid + '] ', service.name)
+                    })
+
+                    console.log('\n[Characteristics]')
+                    characteristics.forEach(function(characteristic){
+                        console.log('[C ' + characteristic.uuid + '] ', characteristic.name)
+                    })
+                }
+                else
+                    throw error
+
+            })
+        })
+
+        return promise
     }
 
     onStartScanner(start) {
@@ -46,6 +120,16 @@ class Discover {
 
     onStopScanner(stop) {
         console.log("[discover] scan stopped");
+    }
+
+    printPeripheralInformations(peripheral){
+        console.log('\n[discover] peripheral discovered:');
+        console.log('[peripheral] id \t'        + peripheral.id + '\n' +
+                    '[peripheral] address \t'   + peripheral.address + '\n' +
+                    '[peripheral] name \t'      + peripheral.advertisement.localName + '\n' +
+                    '[peripheral] services \t'  + peripheral.advertisement.serviceUuids + '\n' +
+                    '[peripheral] raw object \n'+ peripheral + '\n'
+        )
     }
 
     get state(){
