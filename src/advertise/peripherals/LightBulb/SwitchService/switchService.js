@@ -11,7 +11,6 @@ class SwitchService extends bleno.PrimaryService {
         super({
             //uuid: '7777777777777777-111111111-F020000',
             uuid: 'f200',
-
             characteristics: [
                 new PowerCharacteristic()
             ]
