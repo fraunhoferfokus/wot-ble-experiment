@@ -2,6 +2,7 @@
 'use strict';
 
 let bleno = require('bleno');
+let uuids = require('uuids.json')
 
 // define all characteristics here
 let ManufacturerCharacteristic = require('./manufacturerCharacteristic');
@@ -17,7 +18,8 @@ class MetaService extends bleno.PrimaryService {
             // F marks the beginning; two zeros as counter for the services;
             // two zeros as counter for the characteristics; two zeros as counter for the descriptors
             //uuid: '7777777777777777-111111111-F010000',
-            uuid: 'f100',
+
+            uuid: uuids.MetaService.uuid,
 
             characteristics: [
                 new ManufacturerCharacteristic(),
