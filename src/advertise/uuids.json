@@ -1,0 +1,17 @@
+{
+    "MetaService" : {
+        "uuid": "f900",
+        "name" : "W3C WoT MetaService",
+        "type" : "org.w3c.wot.service.meta"
+    },
+    "WoTService" : {
+        "uuid": "f800",
+        "name" : "W3C WoT Service",
+        "type" : "org.w3c.wot.service.wot"
+    },
+    "WoTTDCharacteristic" : {
+        "uuid": "F030101",
+        "name" : "W3C WoT Characteristic",
+        "type" : "org.w3c.wot.characteristic.td"
+    },
+}
