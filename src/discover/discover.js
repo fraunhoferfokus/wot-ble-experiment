@@ -34,17 +34,56 @@ class Discover {
         this.peripheral = peripheral
         let self = this
 
-        this.printPeripheralInformations(peripheral)
+        //this.printPeripheralInformations(peripheral)
         this.connectToPeripheral(this.peripheral)
             .then(function(peripheral){
                 console.log('[discover] connected with ', peripheral.advertisement.localName)
-                //console.log('[discover] peripheral after connect ', peripheral)
-                //return peripheral
             })
             .then(function(){
                 //console.log('[discover] try to discover')
                 //self.discoverServices(self.peripheral)
-                self.discoverEverything(peripheral)
+                return self.discoverEverything(peripheral)
+            })
+            .then(function(peripheralObj){
+                console.log('1.0')
+                let powerCharacteristic = peripheralObj.characteristics[5]
+                //console.log('[onDiscover] powerCharacteristic', powerCharacteristic)
+                self.readCharacteristic(powerCharacteristic)
+                    .then(function(data){
+                        console.log('1.1')
+                        console.log('[discover] read data', data.toString('utf8'))
+
+                        return powerCharacteristic
+                    })
+
+                console.log('1.2')
+            })
+            .then(function(characteristic){
+                console.log('2', characteristic)
+                if(characteristic){
+                    self.writeCharacteristic(characteristic, 'off')
+                        .then(function(writeAnswer){
+                            console.log('writeAnswer', writeAnswer)
+                            if(writeAnswer == 'done'){
+                                console.log('[discover] value written')
+
+                                return characteristic
+                            }
+                            else {
+                                return undefined
+                            }
+                        })
+                }
+            })
+            .then(function(characteristic){
+                console.log('3')
+                console.log('read after write')
+                self.readCharacteristic(characteristic)
+                    .then(function(data){
+                        console.log('[discover] read new data', data.toString('utf8'))
+                    })
+
+                return characteristic
             })
     }
 
@@ -98,17 +137,55 @@ class Discover {
                     console.log('[Services]')
                     services.forEach(function(service){
                         console.log('[S ' + service.uuid + '] ', service.name)
+                        console.log('[S ' + service.uuid + '] ', service.type)
                     })
 
                     console.log('\n[Characteristics]')
                     characteristics.forEach(function(characteristic){
                         console.log('[C ' + characteristic.uuid + '] ', characteristic.name)
                     })
+
+                    let peripheralObj = {}
+                    peripheralObj.obj = peripheral
+                    peripheralObj.services = services
+                    peripheralObj.characteristics = characteristics
+
+                    resolve(peripheralObj)
                 }
                 else
                     throw error
 
             })
+        })
+
+        return promise
+    }
+
+    readCharacteristic(characteristic){
+        console.log('[discover] read characteristic')
+
+        let promise = new Promise(function(resolve, reject){
+            characteristic.read(function(error, data){
+                if(!error)
+                    resolve(data)
+                else
+                    throw error
+            })
+        })
+
+        return promise
+    }
+
+    writeCharacteristic(characteristic, value){
+        console.log('[discover] write characteristic value ', value)
+
+        let promise = new Promise(function(resolve, reject){
+            characteristic.write(new Buffer([value]), true, (function(error){
+                if(error)
+                    throw error
+                else
+                    resolve('done')
+            }))
         })
 
         return promise
@@ -139,47 +216,6 @@ class Discover {
     set state(state){
         noble.state = state
     }
-
 }
 
 module.exports = Discover;
-
-
-/*
-let stateListener = function(state){
-  console.log("[discover] state changed to", state);
-
-  if(state === 'poweredOn'){
-      noble.startScanning();
-  }
-  else {
-      noble.stopScanning();
-  }
-};
-
-let discoverHandler = function(peripheral) {
-    console.log("\n[discover] peripheral discovered: \n");
-    console.log("[peripheral] id \t"        + peripheral.id + "\n" +
-                "[peripheral] address \t"   + peripheral.address + "\n" +
-                "[peripheral] name \t"      + peripheral.advertisement.localName + "\n" +
-                "[peripheral] services \t"  + peripheral.advertisement.serviceUuids + "\n" +
-                "[peripheral] object \n"    + peripheral
-    );
-
-    console.log();
-};
-
-let startScanner = function(start) {
-    console.log("[discover] scan started");
-}
-
-let stopScanner = function(stop) {
-    console.log("[discover] scan stopped");
-}
-
-console.log("[discover] start");
-noble.on('stateChange', stateListener);
-noble.on('discover', discoverHandler);
-noble.on('scanStart', startScanner);
-noble.on('scanStop', stopScanner);
-*/
