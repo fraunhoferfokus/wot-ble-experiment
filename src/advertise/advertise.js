@@ -4,6 +4,7 @@
 let bleno = require('bleno');
 let BlenoPrimaryService = bleno.PrimaryService;
 
+
 let stateListener = function(state){
     console.log("[advertise] state changed to", state);
 

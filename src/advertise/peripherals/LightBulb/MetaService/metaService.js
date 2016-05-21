@@ -2,7 +2,6 @@
 'use strict';
 
 let bleno = require('bleno');
-let uuids = require('./../../../uuids.json')
 
 // define all characteristics here
 let ManufacturerCharacteristic = require('./manufacturerCharacteristic');
@@ -10,7 +9,7 @@ let SoftwareRevisionCharacteristic = require('./softwareRevisionCharacteristic')
 
 
 class MetaService extends bleno.PrimaryService {
-    constructor(){
+    constructor(uuids){
         super({
             // TODO: figure out how to set the correct uuid
             // always use 128 bit uuids, 16- and 32-bits are reserved for the ble spec list
@@ -22,8 +21,8 @@ class MetaService extends bleno.PrimaryService {
             uuid: uuids.MetaService.uuid,
 
             characteristics: [
-                new ManufacturerCharacteristic(),
-                new SoftwareRevisionCharacteristic()
+                new ManufacturerCharacteristic(uuids),
+                new SoftwareRevisionCharacteristic(uuids)
             ]
         })
 

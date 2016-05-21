@@ -42,6 +42,7 @@ class Discover {
             .then(function(){
                 //console.log('[discover] try to discover')
                 //self.discoverServices(self.peripheral)
+                console.log('0.0')
                 return self.discoverEverything(peripheral)
             })
             .then(function(peripheralObj){
