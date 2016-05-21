@@ -4,7 +4,7 @@
     "Jonas Rook <jonas.rook@fokus.fraunhofer.de>",
     "Louay Bassbouss <louay.bassbouss@fokus.fraunhofer.de>"
   ],
-  "version": "0.0.1",
+  "version": "0.1.1",
   "description": "This is the first experiment with WoT and Bluetooth low energy",
   "license": "...",
   "dependencies": {
