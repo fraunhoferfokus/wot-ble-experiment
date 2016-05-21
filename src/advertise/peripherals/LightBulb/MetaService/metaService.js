@@ -2,7 +2,7 @@
 'use strict';
 
 let bleno = require('bleno');
-let uuids = require('uuids.json')
+let uuids = require('./../../../uuids.json')
 
 // define all characteristics here
 let ManufacturerCharacteristic = require('./manufacturerCharacteristic');
