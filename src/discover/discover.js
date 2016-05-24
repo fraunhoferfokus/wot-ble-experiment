@@ -81,9 +81,14 @@ class Discover {
                 console.log('3.0')
                 return self.readCharacteristic(characteristic)
                     .then(function(data){
-                        console.log(data)
                         console.log('[discover] read new data', data.toString('utf8'))
+                        return characteristic
                     })
+            })
+            .then(function(characteristic){
+                console.log('4.0')
+
+                self.subscribeCharacteristic(characteristic)
             })
     }
 
@@ -190,6 +195,19 @@ class Discover {
         })
 
         return promise
+    }
+
+    subscribeCharacteristic(characteristic){
+        console.log('[discover] subscribe to ', characteristic.uuid)
+        characteristic.subscribe(function(error){
+            console.log(error)
+        })
+    }
+
+    unsubscribeCharacteristic(characteristic){
+        characteristic.unsubscribe(function(error){
+            console.log(error)
+        })
     }
 
     onStartScanner(start) {

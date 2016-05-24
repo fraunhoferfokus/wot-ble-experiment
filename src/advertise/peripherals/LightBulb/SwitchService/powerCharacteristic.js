@@ -69,7 +69,7 @@ class PowerCharacteristic extends bleno.Characteristic {
         self.maxValueSize = maxValueSize
         self.updateValueCallback = updateValueCallback
 
-        /*
+
         self.i = 1
 
         self.timer = setInterval(function(){
@@ -77,7 +77,7 @@ class PowerCharacteristic extends bleno.Characteristic {
                 self.updateValueCallback(new Buffer("" + self.i++));
             }
         }, 1000)
-        */
+        
     };
 
     onUnsubscribe(){
