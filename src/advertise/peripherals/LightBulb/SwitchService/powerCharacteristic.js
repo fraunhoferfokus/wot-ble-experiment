@@ -45,9 +45,11 @@ class PowerCharacteristic extends bleno.Characteristic {
     }
 
     onWriteRequest(data, offset, withoutResponse, callback) {
+        console.log('[powerCharacteristic] writeRequest powerCharacteristic: ', data);
+
         let dataString = data.toString('utf8')
 
-        if(dataString.match(/^(on|off)$/)){
+        if(dataString == 'on' || dataString == 'off'){
             console.log('[powerCharacteristic] writeRequest: ', dataString)
             this.data = dataString
 
