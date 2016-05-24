@@ -49,7 +49,7 @@ class Discover {
                 console.log('1.0')
                 let powerCharacteristic = peripheralObj.characteristics[5]
                 //console.log('[onDiscover] powerCharacteristic', powerCharacteristic)
-                self.readCharacteristic(powerCharacteristic)
+                return self.readCharacteristic(powerCharacteristic)
                     .then(function(data){
                         console.log('1.1')
                         console.log('[discover] read data', data.toString('utf8'))
@@ -60,9 +60,9 @@ class Discover {
                 console.log('1.2')
             })
             .then(function(characteristic){
-                console.log('2', characteristic)
+                console.log('2.0')
                 if(characteristic){
-                    self.writeCharacteristic(characteristic, 'off')
+                    return self.writeCharacteristic(characteristic, 'off')
                         .then(function(writeAnswer){
                             console.log('writeAnswer', writeAnswer)
                             if(writeAnswer == 'done'){
@@ -71,20 +71,19 @@ class Discover {
                                 return characteristic
                             }
                             else {
+                                console.log('undefined')
                                 return undefined
                             }
                         })
                 }
             })
             .then(function(characteristic){
-                console.log('3')
-                console.log('read after write')
-                self.readCharacteristic(characteristic)
+                console.log('3.0')
+                return self.readCharacteristic(characteristic)
                     .then(function(data){
+                        console.log(data)
                         console.log('[discover] read new data', data.toString('utf8'))
                     })
-
-                return characteristic
             })
     }
 
@@ -181,7 +180,8 @@ class Discover {
         console.log('[discover] write characteristic value ', value)
 
         let promise = new Promise(function(resolve, reject){
-            characteristic.write(new Buffer([value]), true, (function(error){
+            characteristic.write(new Buffer(value), false, (function(error, data){
+                console.log('write call', data)
                 if(error)
                     throw error
                 else
