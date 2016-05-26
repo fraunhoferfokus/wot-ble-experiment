@@ -3,24 +3,30 @@
 
 let bleno = require('bleno');
 
-let powerDescriptor = new bleno.Descriptor({
-    uuid: '1111111111111111111111111F020101',
+/*let powerDescriptor = new bleno.Descriptor({
+    uuid: '7777777777777777-111111111-F020101',
     value:'To control the power of this sensor'
 });
 
 let stateDescriptor = new bleno.Descriptor({
-    uuid: '1111111111111111111111111F020102',
+    uuid: '7777777777777777-111111111-F020102',
     value: "['on', 'off']"
-});
+});*/
 
 class PowerCharacteristic extends bleno.Characteristic {
-    constructor(){
+    constructor(uuids){
         super({
-            uuid: '1111111111111111111111111F020100',
+            uuid: uuids.PowerCharacteristic.uuid,
             properties: ['read', 'write', 'notify'],
             descriptors: [
-                powerDescriptor,
-                stateDescriptor
+                new bleno.Descriptor({
+                    uuid: uuids.PowerDescriptor.uuid,
+                    value:'To control the power of this sensor'
+                }),
+                new bleno.Descriptor({
+                    uuid: uuids.StateDescriptor.uuid,
+                    value: "['on', 'off']"
+                })
             ],
         })
 
@@ -41,7 +47,7 @@ class PowerCharacteristic extends bleno.Characteristic {
     onWriteRequest(data, offset, withoutResponse, callback) {
         let dataString = data.toString('utf8')
 
-        if(dataString.match(/^(on|off)$/)){
+        if(dataString == 'on' || dataString == 'off'){
             console.log('[powerCharacteristic] writeRequest: ', dataString)
             this.data = dataString
 
@@ -61,7 +67,7 @@ class PowerCharacteristic extends bleno.Characteristic {
         self.maxValueSize = maxValueSize
         self.updateValueCallback = updateValueCallback
 
-        /*
+
         self.i = 1
 
         self.timer = setInterval(function(){
@@ -69,7 +75,7 @@ class PowerCharacteristic extends bleno.Characteristic {
                 self.updateValueCallback(new Buffer("" + self.i++));
             }
         }, 1000)
-        */
+
     };
 
     onUnsubscribe(){

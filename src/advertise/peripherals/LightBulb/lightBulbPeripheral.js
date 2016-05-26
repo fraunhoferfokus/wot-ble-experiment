@@ -9,15 +9,15 @@ let SwitchService = require('./SwitchService/switchService');
 
 class LightBulbPeripheral
 {
-    constructor(name)
+    constructor(name, uuids)
     {
         console.log('[LightBulb] create', name)
         this.name = name;
 
         // list all servies here
         this.services = [
-            new MetaService(),
-            new SwitchService(),
+            new MetaService(uuids),
+            new SwitchService(uuids),
         ]
 
         // extract all service uuids for advertising
@@ -70,6 +70,15 @@ class LightBulbPeripheral
         }
 
         return uuids;
+    }
+
+    get state(){
+        return bleno.state
+    }
+
+    set state(state){
+        console.log('[LightBulb] set bleno to ', state)
+        bleno.state = state
     }
 }
 
