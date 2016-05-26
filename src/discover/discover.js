@@ -199,14 +199,40 @@ class Discover {
 
     subscribeCharacteristic(characteristic){
         console.log('[discover] subscribe to ', characteristic.uuid)
-        characteristic.subscribe(function(error){
-            console.log(error)
+
+        characteristic.notify(true, function(error){
+            if(error)
+                throw error
+            else {
+                console.log('notify response', error)
+            }
         })
+
+        characteristic.once('notify', function(response){
+            if(response)
+                console.log('on ' + characteristic.uuid + ' subscribed')
+        })
+
+        characteristic.on('read', this.onNotify.bind(this))
+        this.characteristic = characteristic
+    }
+
+    onNotify(data, isNotification){
+        console.log('isNotification', isNotification)
+        if( data.toString('utf8') <= 10)
+            console.log('notification ', data.toString('utf8'))
+        else {
+            this.unsubscribeCharacteristic(this.characteristic)
+        }
     }
 
     unsubscribeCharacteristic(characteristic){
-        characteristic.unsubscribe(function(error){
-            console.log(error)
+        characteristic.notify(false, function(error){
+            if(error)
+                throw error
+            else {
+                console.log('notify response', error)
+            }
         })
     }
 

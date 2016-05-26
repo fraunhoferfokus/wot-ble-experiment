@@ -45,8 +45,6 @@ class PowerCharacteristic extends bleno.Characteristic {
     }
 
     onWriteRequest(data, offset, withoutResponse, callback) {
-        console.log('[powerCharacteristic] writeRequest powerCharacteristic: ', data);
-
         let dataString = data.toString('utf8')
 
         if(dataString == 'on' || dataString == 'off'){
@@ -77,7 +75,7 @@ class PowerCharacteristic extends bleno.Characteristic {
                 self.updateValueCallback(new Buffer("" + self.i++));
             }
         }, 1000)
-        
+
     };
 
     onUnsubscribe(){
