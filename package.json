@@ -9,7 +9,7 @@
   "license": "...",
   "dependencies": {
     "bleno": "^0.4.0",
-    "noble": "^1.4.0"
+    "noble": "^1.5.0"
   },
   "devDependencies": {}
 }
