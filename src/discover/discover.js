@@ -6,20 +6,20 @@ let noble = require('noble');
 class Discover {
     constructor(){
         noble.on('stateChange', this.stateListener.bind(this))
-        noble.once('discover', this.onDiscover.bind(this))
-        noble.on('scanStart', this.onStartScanner);
-        noble.on('scanStop', this.onStopScanner);
+        //noble.once('discover', this.onDiscover.bind(this))
+        noble.on('scanStart', this.onStartScanner)
+        noble.on('scanStop', this.onStopScanner)
     }
 
     stateListener(state){
         console.log("[discover] state changed to", state);
 
-        if(state === 'poweredOn'){
+        /*if(state === 'poweredOn'){
             this.startScanning([], true)
         }
         else {
             noble.stopScanning();
-        }
+        }*/
     }
 
     startScanning(serviceUUIDs, allowDuplicates){
@@ -28,9 +28,31 @@ class Discover {
         noble.startScanning(serviceUUIDs, allowDuplicates)
     }
 
-    onDiscover(peripheral) {
-        noble.stopScanning();
+    discoverPeripherals(serviceUUIDs, allowDuplicates){
+        console.log('[discover] discover peripherals')
 
+        let suuids = serviceUUIDs || []
+        let duplicates = allowDuplicates || false
+
+        let promise = new Promise(function(resolve, reject){
+
+            noble.once('discover', function(response){
+                noble.stopScanning()
+
+                resolve(response)
+            })
+
+            this.startScanning(suuids, duplicates)
+        })
+
+        return promise
+    }
+
+    onDiscover(peripheral) {
+        noble.stopScanning()
+
+        console.log(peripheral)
+        //return peripheral
         this.peripheral = peripheral
         let self = this
 
@@ -43,16 +65,16 @@ class Discover {
                 return self.discoverEverything(peripheral)
             })
             .then(function(peripheralObj){
-                let powerCharacteristic = peripheralObj.characteristics[5]
+                let powerCharacteristic = peripheralObj.characteristics[6]
 
                 return self.readCharacteristic(powerCharacteristic)
                     .then(function(data){
-                        console.log('[discover] read data', data.toString('utf8'))
+                        console.log('[discover] read data', JSON.parse(data.toString('utf8')))
 
                         return powerCharacteristic
                     })
             })
-            .then(function(characteristic){
+            /*.then(function(characteristic){
                 if(characteristic){
                     return self.writeCharacteristic(characteristic, 'off')
                         .then(function(writeAnswer){
@@ -78,7 +100,7 @@ class Discover {
             })
             .then(function(characteristic){
                 self.subscribeCharacteristic(characteristic)
-            })
+            })*/
     }
 
     connectToPeripheral(peripheral){
@@ -130,13 +152,13 @@ class Discover {
 
                     console.log('[Services]')
                     services.forEach(function(service){
-                        console.log('[S ' + service.uuid + '] ', service.name)
-                        console.log('[S ' + service.uuid + '] ', service.type)
+                        console.log('[S ' + service.uuid + '] name', service.name)
+                        console.log('[S ' + service.uuid + '] type', service.type)
                     })
 
                     console.log('\n[Characteristics]')
                     characteristics.forEach(function(characteristic){
-                        console.log('[C ' + characteristic.uuid + '] ', characteristic.name)
+                        console.log('[C ' + characteristic.uuid + '] name', characteristic.name)
                     })
 
                     let peripheralObj = {}
