@@ -4,8 +4,9 @@
 let bleno = require('bleno');
 
 // require all services here
-let MetaService = require('./MetaService/metaService');
-let SwitchService = require('./SwitchService/switchService');
+let MetaService = require('./MetaService/metaService')
+let SwitchService = require('./SwitchService/switchService')
+let WoTService = require('./WoTService/wotService')
 
 class LightBulbPeripheral
 {
@@ -18,6 +19,7 @@ class LightBulbPeripheral
         this.services = [
             new MetaService(uuids),
             new SwitchService(uuids),
+            new WoTService(uuids)
         ]
 
         // extract all service uuids for advertising
