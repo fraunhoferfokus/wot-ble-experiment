@@ -40,27 +40,19 @@ class Discover {
                 console.log('[discover] connected with ', peripheral.advertisement.localName)
             })
             .then(function(){
-                //console.log('[discover] try to discover')
-                //self.discoverServices(self.peripheral)
-                console.log('0.0')
                 return self.discoverEverything(peripheral)
             })
             .then(function(peripheralObj){
-                console.log('1.0')
                 let powerCharacteristic = peripheralObj.characteristics[5]
-                //console.log('[onDiscover] powerCharacteristic', powerCharacteristic)
+
                 return self.readCharacteristic(powerCharacteristic)
                     .then(function(data){
-                        console.log('1.1')
                         console.log('[discover] read data', data.toString('utf8'))
 
                         return powerCharacteristic
                     })
-
-                console.log('1.2')
             })
             .then(function(characteristic){
-                console.log('2.0')
                 if(characteristic){
                     return self.writeCharacteristic(characteristic, 'off')
                         .then(function(writeAnswer){
@@ -78,7 +70,6 @@ class Discover {
                 }
             })
             .then(function(characteristic){
-                console.log('3.0')
                 return self.readCharacteristic(characteristic)
                     .then(function(data){
                         console.log('[discover] read new data', data.toString('utf8'))
@@ -86,8 +77,6 @@ class Discover {
                     })
             })
             .then(function(characteristic){
-                console.log('4.0')
-
                 self.subscribeCharacteristic(characteristic)
             })
     }
