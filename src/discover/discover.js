@@ -1,12 +1,14 @@
 // to enable es2015 features
 'use strict';
 
+const EventEmitter = require('events')
 let noble = require('noble');
 
 class Discover {
     constructor(){
+        this.emitter = new EventEmitter()
         noble.on('stateChange', this.stateListener.bind(this))
-        //noble.once('discover', this.onDiscover.bind(this))
+        noble.once('discover', this.onDiscover.bind(this))
         noble.on('scanStart', this.onStartScanner)
         noble.on('scanStop', this.onStopScanner)
     }
@@ -14,12 +16,13 @@ class Discover {
     stateListener(state){
         console.log("[discover] state changed to", state);
 
-        /*if(state === 'poweredOn'){
-            this.startScanning([], true)
+        if(state === 'poweredOn'){
+            //this.startScanning([], true)
+            this.emitter.emit('poweredOn')
         }
         else {
             noble.stopScanning();
-        }*/
+        }
     }
 
     startScanning(serviceUUIDs, allowDuplicates){
@@ -263,6 +266,10 @@ class Discover {
                     '[peripheral] services \t'  + peripheral.advertisement.serviceUuids + '\n' +
                     '[peripheral] raw object \n'+ peripheral + '\n'
         )
+    }
+
+    on(event, callback){
+        this.emitter.on(event, callback)
     }
 
     get state(){
