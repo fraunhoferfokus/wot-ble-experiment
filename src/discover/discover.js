@@ -8,7 +8,7 @@ class Discover {
     constructor(){
         this.emitter = new EventEmitter()
         noble.on('stateChange', this.stateListener.bind(this))
-        noble.once('discover', this.onDiscover.bind(this))
+        //noble.once('discover', this.onDiscover.bind(this))
         noble.on('scanStart', this.onStartScanner)
         noble.on('scanStop', this.onStopScanner)
     }
@@ -26,9 +26,12 @@ class Discover {
     }
 
     startScanning(serviceUUIDs, allowDuplicates){
-        console.log('[discover] scan services')
+        console.log('[discover] scan services ' + serviceUUIDs + allowDuplicates)
 
-        noble.startScanning(serviceUUIDs, allowDuplicates)
+        noble.startScanning(serviceUUIDs, allowDuplicates, (error) => {
+            if(error)
+                console.log('[discover] scanner error', error)
+        })
     }
 
     discoverPeripherals(serviceUUIDs, allowDuplicates){
@@ -37,9 +40,9 @@ class Discover {
         let suuids = serviceUUIDs || []
         let duplicates = allowDuplicates || false
 
-        let promise = new Promise(function(resolve, reject){
-
-            noble.once('discover', function(response){
+        let promise = new Promise((resolve, reject) => {
+            noble.once('discover', (response) => {
+                console.log('[discover] discovered peripherals')
                 noble.stopScanning()
 
                 resolve(response)
@@ -53,26 +56,23 @@ class Discover {
 
     onDiscover(peripheral) {
         noble.stopScanning()
-
-        console.log(peripheral)
-        //return peripheral
         this.peripheral = peripheral
         let self = this
 
         //this.printPeripheralInformations(peripheral)
         this.connectToPeripheral(this.peripheral)
-            .then(function(peripheral){
+            .then((peripheral) => {
                 console.log('[discover] connected with ', peripheral.advertisement.localName)
             })
-            .then(function(){
+            .then(() => {
                 return self.discoverEverything(peripheral)
             })
-            .then(function(peripheralObj){
+            .then((peripheralObj) => {
                 let powerCharacteristic = peripheralObj.characteristics[6]
 
                 return self.readCharacteristic(powerCharacteristic)
-                    .then(function(data){
-                        console.log('[discover] read data', JSON.parse(data.toString('utf8')))
+                    .then((data) => {
+                        //console.log('[discover] read data', JSON.parse(data.toString('utf8')))
 
                         return powerCharacteristic
                     })
@@ -110,7 +110,7 @@ class Discover {
         console.log('[discover] connect to ' + peripheral.advertisement.localName)
 
         let promise = new Promise(function(resolve, reject){
-            peripheral.connect(function(error){
+            peripheral.connect((error) => {
                 if(error)
                     throw error;
                 else
@@ -125,8 +125,8 @@ class Discover {
         console.log('[discoverServices] discover services ' + (uuids != undefined ? uuids : 'all'))
 
         let serviceUUIDS = uuids || []
-        let promise = new Promise(function(resolve, reject){
-            peripheral.discoverServices(serviceUUIDS, function(error, services){
+        let promise = new Promise((resolve, reject) => {
+            peripheral.discoverServices(serviceUUIDS, (error, services) => {
                 if(!error){
                     services.forEach(function(service){
                         if(service.uuid != 1800 && service.uuid != 1801)

@@ -12,14 +12,15 @@ discover.on('poweredOn', function(event){
 
     let uuids = []
     let allowDuplicates = true
-    
+
     discover.discoverPeripherals(uuids, allowDuplicates)
-        .then(function(peripherals){
+        .then((peripherals) => {
             // check the response / is it an array or something else
+            console.log('[main_discover] peripherals discovered')
             let lightBulb = peripherals[0]
             return connectToPeripheral(lightBulb)
         })
-        .then(function(peripheral){
+        .then((peripheral) => {
             discoverServices(peripheral)
         })
 })
