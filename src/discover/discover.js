@@ -2,7 +2,8 @@
 'use strict';
 
 const EventEmitter = require('events')
-let noble = require('noble');
+let noble = require('noble')
+let cbor = require('cbor')
 
 class Discover {
     constructor(){
@@ -122,22 +123,36 @@ class Discover {
     }
 
     discoverServices(peripheral, uuids){
-        console.log('[discoverServices] discover services ' + (uuids != undefined ? uuids : 'all'))
+        console.log('[discover] discover services ' + (uuids != undefined ? uuids : 'all'))
 
         let serviceUUIDS = uuids || []
         let promise = new Promise((resolve, reject) => {
             peripheral.discoverServices(serviceUUIDS, (error, services) => {
                 if(!error){
-                    services.forEach(function(service){
-                        if(service.uuid != 1800 && service.uuid != 1801)
-                            console.log('[discoverServices] ', service)
-                    })
+                    resolve(services)
                 }
                 else
                     throw error
 
             })
-            //console.log(peripheral)
+        })
+
+        return promise
+    }
+
+    discoverCharacteristics(service, uuids){
+        console.log('[discover] discover characteristics ' + (uuids != undefined ? uuids : 'all'))
+
+        let characteristicUUIDS = uuids || []
+        let promise = new Promise((resolve, reject) => {
+            service.discoverCharacteristics(characteristicUUIDS, (error, characteristics) => {
+                if(!error){
+                    resolve(characteristics)
+                }
+                else
+                    throw error
+
+            })
         })
 
         return promise
@@ -185,8 +200,32 @@ class Discover {
 
         let promise = new Promise(function(resolve, reject){
             characteristic.read(function(error, data){
-                if(!error)
+                if(!error){
                     resolve(data)
+                }
+                else
+                    throw error
+            })
+        })
+
+        return promise
+    }
+
+    readCborCharacteristic(characteristic){
+        console.log('[discover] read cbor characteristic')
+
+        let promise = new Promise(function(resolve, reject){
+            characteristic.read(function(error, data){
+                if(!error){
+                    cbor.decodeFirst(data, (error, obj) => {
+                        if(error != null)
+                            throw error
+                        else
+                            resolve(obj)
+                    })
+
+
+                }
                 else
                     throw error
             })
