@@ -198,8 +198,8 @@ class Discover {
     readCharacteristic(characteristic){
         console.log('[discover] read characteristic')
 
-        let promise = new Promise(function(resolve, reject){
-            characteristic.read(function(error, data){
+        let promise = new Promise((resolve, reject) => {
+            characteristic.read((error, data) => {
                 if(!error){
                     resolve(data)
                 }
@@ -214,21 +214,48 @@ class Discover {
     readCborCharacteristic(characteristic){
         console.log('[discover] read cbor characteristic')
 
-        let promise = new Promise(function(resolve, reject){
-            characteristic.read(function(error, data){
-                if(!error){
-                    cbor.decodeFirst(data, (error, obj) => {
+        let promise = new Promise((resolve, reject) => {
+            this.readCharacteristic(characteristic)
+                .then((characteristicValue) => {
+
+                    cbor.decodeFirst(characteristicValue, function(error, obj) {
                         if(error != null)
                             throw error
                         else
                             resolve(obj)
                     })
+                })
+                .catch((error) => {
+                    console.log('readCbor ', error)
+                })
+        })
+
+        return promise
+    }
+
+    readThingDescription(characteristic){
+        console.log('[discover] read thing description')
+
+        let promise = new Promise((resolve, reject) => {
+            this.readCborCharacteristic(characteristic)
+                .then((data) => {
+
+                    // check if the data is the TD in json format
+                    // use it earlier, at this time it is already a json object
+                    if(this.isJSON(data))
+                        resolve(data)
+                    else {
+                        this.loadDescriptionFromURL(data)
+                            .then((data) => {
+                                resolve(data)
+                            })
+                    }
 
 
-                }
-                else
-                    throw error
-            })
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
         })
 
         return promise
@@ -305,6 +332,23 @@ class Discover {
                     '[peripheral] services \t'  + peripheral.advertisement.serviceUuids + '\n' +
                     '[peripheral] raw object \n'+ peripheral + '\n'
         )
+    }
+
+    loadDescriptionFromURL(url) {
+        let promise = new Promise((resolve, reject) => {
+            reject('LoaderNotImplemented')
+        })
+
+        return promise
+    }
+
+    isJSON(jsonString){
+        let isJSON = false
+
+        if(typeof jsonString != 'string' )
+            isJSON = true
+
+        return isJSON
     }
 
     on(event, callback){
