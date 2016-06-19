@@ -1,7 +1,8 @@
 // to enable es2015 features
 'use strict';
 
-let bleno = require('bleno');
+let bleno = require('bleno')
+let cbor = require('cbor')
 
 let thingDescription = {
     "@context" : "urlToContextDescription",
@@ -58,7 +59,7 @@ class WoTTDCharacteristic extends bleno.Characteristic {
                     value:'pathToDescription'
                 })
             ],
-            value: JSON.stringify(thingDescription)
+            value: cbor.encode(thingDescription)
         })
     }
 }
