@@ -43,9 +43,12 @@ discover.on('poweredOn', function(event){
                                 .then((characteristics) => {
                                     for(let characteristic of characteristics){
                                         if(characteristic.uuid === '7777777777777777111111111f030100')
-                                            discover.readCborCharacteristic(characteristic)
+                                            discover.readThingDescription(characteristic)
                                                 .then((response) => {
-                                                    console.log('[main_discover] characteristic ', response)
+                                                    console.log('[main_discover] value ', response)
+                                                })
+                                                .catch((error) => {
+                                                    console.log('error', error)
                                                 })
                                     }
                                 })
