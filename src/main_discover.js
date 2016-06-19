@@ -17,11 +17,44 @@ discover.on('poweredOn', function(event){
         .then((peripherals) => {
             // check the response / is it an array or something else
             console.log('[main_discover] peripherals discovered')
-            let lightBulb = peripherals[0]
-            return connectToPeripheral(lightBulb)
+
+            if(Array.isArray(peripherals)){
+                // do something
+            }
+            else {
+                console.log('[main_discover] connect to peripheral')
+
+                let lightBulb = peripherals
+                return discover.connectToPeripheral(lightBulb)
+            }
         })
         .then((peripheral) => {
-            discoverServices(peripheral)
+            discover.discoverServices(peripheral)
+                .then((services) => {
+                    console.log('[main_discover] discovered services', services.length)
+
+                    for(let service of services){
+                        console.log('service_id: ', service.uuid)
+
+                        if(service.uuid == 'f100'){
+                            console.log('[main_discover] WoT Service found')
+
+                            discover.discoverCharacteristics(service)
+                                .then((characteristics) => {
+                                    for(let characteristic of characteristics){
+                                        if(characteristic.uuid === '7777777777777777111111111f030100')
+                                            discover.readCborCharacteristic(characteristic)
+                                                .then((response) => {
+                                                    console.log('[main_discover] characteristic ', response)
+                                                })
+                                    }
+                                })
+
+                        }
+                    }
+
+
+                })
         })
 })
 
