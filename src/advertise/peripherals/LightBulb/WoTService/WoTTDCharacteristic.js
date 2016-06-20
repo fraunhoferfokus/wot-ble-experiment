@@ -4,9 +4,12 @@
 let bleno = require('bleno')
 let cbor = require('cbor')
 
+/*
 let thingURL = {
     url: 'www.bla.com/thingDescription'
 }
+*/
+let thingURL = 'www.bla.com/thingDescription'
 
 let thingDescription = {
     "@context" : "urlToContextDescription",
@@ -63,7 +66,8 @@ class WoTTDCharacteristic extends bleno.Characteristic {
                     value:'pathToDescription'
                 })
             ],
-            value: cbor.encode(thingURL)
+            //value: cbor.encode(thingURL)
+            value: cbor.encode(thingDescription)
         })
     }
 }
