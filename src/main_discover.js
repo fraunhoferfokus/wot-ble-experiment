@@ -22,7 +22,7 @@ discover.on('poweredOn', function(event){
                 // do something
             }
             else {
-                console.log('[main_discover] connect to peripheral')
+                console.log('[main_discover] connect to peripheral', peripherals)
 
                 let lightBulb = peripherals
                 return discover.connectToPeripheral(lightBulb)

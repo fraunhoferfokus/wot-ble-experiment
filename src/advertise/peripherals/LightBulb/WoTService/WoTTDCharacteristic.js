@@ -9,7 +9,7 @@ let thingURL = {
     url: 'www.bla.com/thingDescription'
 }
 */
-let thingURL = 'www.bla.com/thingDescription'
+let thingURL = 'http://www.bla.com/thingDescription'
 
 let thingDescription = {
     "@context" : "urlToContextDescription",
@@ -20,14 +20,6 @@ let thingDescription = {
     ],
     "encodings": ["BLE"],
     "properties": [
-        {
-            "@id": "ThingDescription",
-            "@type": "ThingDescription",
-            "name": "WoT-ThingDescription",
-            "outputData": "xsd:string",
-            "writable": false,
-            "hrefs": "[uuid?]"
-        },
         {
             "@id": "Manufacturer",
             "@type": "Manufacturer",
