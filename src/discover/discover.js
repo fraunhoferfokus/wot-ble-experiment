@@ -46,7 +46,7 @@ class Discover {
                 console.log('[discover] discovered peripherals')
                 noble.stopScanning()
 
-                resolve(response)
+                resolve([response])
             })
 
             this.startScanning(suuids, duplicates)
