@@ -122,6 +122,21 @@ class Discover {
         return promise
     }
 
+    disconnectFromPeripheral(peripheral){
+        console.log('[discover] disconnect from ' + peripheral.advertisement.localName)
+
+        let promise = new Promise(function(resolve, reject){
+            peripheral.disconnect((error) => {
+                if(error)
+                    throw error;
+                else
+                    resolve(peripheral)
+            })
+        })
+
+        return promise
+    }
+
     discoverServices(peripheral, uuids){
         console.log('[discover] discover services ' + (uuids != undefined ? uuids : 'all'))
 
