@@ -10,12 +10,8 @@ class WoT {
     let discoverAPI
 
     constructor(){
-        let promise = new Promise((resolve, reject) => {
-            discoverAPI = new Discover()
-            pool = []
-        })
-
-        return promise
+        discoverAPI = new Discover()
+        pool = []
     }
 
     /**
@@ -25,21 +21,25 @@ class WoT {
     discover(filter){
         let promise = new Promise((resolve, reject) => {
             let wotServiceUUID = uuids.WoTService.uuid
-            let thingDescriptionUUID = uuids.WoTTDCharacteristic.uuid
-            let thingDescriptionList = []
+            let descriptionUUID = uuids.WoTTDCharacteristic.uuid
+            let consumedThingList = []
 
             discoverAPI.discoverPeripherals(wotServiceUUID)
                 .then((peripherals) => {
+                    let promiseList = []
                     for(let peripheral of peripherals){
-                        discoverAPI.discoverServices(peripheral, wotServiceUUID)
-                            .then(discoverAPI.discoverCharacteristics(response, thingDescriptionUUID))
-                            .then(discoverAPI.readThingDescription(response))
-                            .then((response) => {
-                                console.log('[WoTAPI] current Description', response)
-                            })
+                        promiseList.push(this.readThingDescription(peripheral, wotServiceUUID, descriptionUUID))
                     }
-                })
 
+                    return Promise.all(promiseList)
+                })
+                .then(promiseList){
+                    // resolve the list with the descriptions
+                    resolve('list with descriptions', promiseList)
+                }
+                .catch((error) => {
+                    reject(error)
+                })
         })
 
         return promise
@@ -48,10 +48,52 @@ class WoT {
     /**
     *   creates an object of ConsumedThing with the given TD
     */
-    consumeDescription(td){
+    consumeDescription(thingDescription){
         let promise = new Promise((resolve, reject) => {
+            let thing = new ConsumedThing(thingDescription, pool)
+                .then((thing) => {
+                    resolve(thing)
+                })
+                .catch((error) => {
+                    reject(error)
+                })
+        })
 
+        return promise
+    }
 
+    /**
+    *   this discovers the WoT-Services and reads the thingDescription
+    */
+    readThingDescription(peripheral, wotServiceUUID, descriptionUUID){
+        let promise = new Promise((resolve, reject) => {
+            discoverAPI.connectToPeripheral(peripheral)
+                .then((peripheral) => {
+                    return discoverAPI.discoverServices(peripheral, wotServiceUUID)
+                })
+                .then((response) => {
+                    return discoverAPI.discoverCharacteristics(response, descriptionUUID)
+                })
+                .then((response) => {
+                    return discoverAPI.readThingDescription(response)
+                })
+                .then((response) => {
+                    console.log('[WoTAPI] current Description', response)
+                    // TODO: create a ConsumedThing object
+                    return this.consumeDescription(response)
+                })
+                .then((thing) => {
+                    return discoverAPI.disconnectFromPeripheral(peripheral)
+                        .then((peripheral) => {
+                            resolve(thing)
+                        })
+                        .catch((error) => {
+                            reject(error)
+                        })
+                })
+                .catch((error) => {
+                    reject(error)
+                })
         })
 
         return promise
