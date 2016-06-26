@@ -1,17 +1,21 @@
 // to enable es2015 features
 'use strict'
 
-let Discover = require('/discover/discover')
-let uuids = require('./advertise/uuids')
+let Discover = require('../discover/discover')
+let uuids = require('../advertise/uuids')
+let ConsumedThing = require('./consumedThing')
 
-class WoT {
-    // list of connected peripherals
-    let pool
-    let discoverAPI
-
+/**
+*
+*   exported functions
+*       - discover(ThingFilter)
+*       - consumeDescription(ThingDescription)
+*/
+class WoTAPI {
     constructor(){
-        discoverAPI = new Discover()
-        pool = []
+        console.log('[WoT_API] WoT object created')
+        this.discoverAPI = new Discover()
+        this.pool = []
     }
 
     /**
@@ -21,22 +25,21 @@ class WoT {
     discover(filter){
         let promise = new Promise((resolve, reject) => {
             let wotServiceUUID = uuids.WoTService.uuid
-            let descriptionUUID = uuids.WoTTDCharacteristic.uuid
+            let characteristicUUID = uuids.WoTTDCharacteristic.uuid
             let consumedThingList = []
 
-            discoverAPI.discoverPeripherals(wotServiceUUID)
+            this.discoverAPI.discoverPeripherals(wotServiceUUID)
                 .then((peripherals) => {
                     let promiseList = []
                     for(let peripheral of peripherals){
-                        promiseList.push(this.readThingDescription(peripheral, wotServiceUUID, descriptionUUID))
+                        promiseList.push(this.readThingDescription(peripheral, wotServiceUUID, characteristicUUID))
                     }
 
                     return Promise.all(promiseList)
                 })
-                .then(promiseList){
-                    // resolve the list with the descriptions
-                    resolve('list with descriptions', promiseList)
-                }
+                .then((promiseList) => {
+                    resolve(promiseList)
+                })
                 .catch((error) => {
                     reject(error)
                 })
@@ -50,13 +53,8 @@ class WoT {
     */
     consumeDescription(thingDescription){
         let promise = new Promise((resolve, reject) => {
-            let thing = new ConsumedThing(thingDescription, pool)
-                .then((thing) => {
-                    resolve(thing)
-                })
-                .catch((error) => {
-                    reject(error)
-                })
+            let thing = new ConsumedThing(thingDescription, this.pool, this.discoverAPI)
+            resolve(thing)
         })
 
         return promise
@@ -65,25 +63,33 @@ class WoT {
     /**
     *   this discovers the WoT-Services and reads the thingDescription
     */
-    readThingDescription(peripheral, wotServiceUUID, descriptionUUID){
+    readThingDescription(peripheral, wotServiceUUID, characteristicUUID){
+        console.log('[WoT_API] readThingDescription from')
         let promise = new Promise((resolve, reject) => {
-            discoverAPI.connectToPeripheral(peripheral)
+            this.discoverAPI.connectToPeripheral(peripheral)
                 .then((peripheral) => {
-                    return discoverAPI.discoverServices(peripheral, wotServiceUUID)
+                    console.log('[WoT_API] discoverServices')
+                    return this.discoverAPI.discoverServices(peripheral, wotServiceUUID)
                 })
                 .then((response) => {
-                    return discoverAPI.discoverCharacteristics(response, descriptionUUID)
+                    console.log('[WoT_API] discoverCharacteristics')
+                    return this.discoverAPI.discoverCharacteristics(response[0], characteristicUUID)
                 })
                 .then((response) => {
-                    return discoverAPI.readThingDescription(response)
+                    console.log('[WoT_API] readThingDescription')
+                    return this.discoverAPI.readThingDescription(response[0])
                 })
                 .then((response) => {
-                    console.log('[WoTAPI] current Description', response)
-                    // TODO: create a ConsumedThing object
+                    console.log('[WoT_API] create ConsumedThing')
+
+                    response.uris = [`gatt://${peripheral.address}/`]
+
                     return this.consumeDescription(response)
                 })
                 .then((thing) => {
-                    return discoverAPI.disconnectFromPeripheral(peripheral)
+                    thing.peripheral = peripheral
+                    console.log('[WoT_API] disconnectFromPeripheral')
+                    return this.discoverAPI.disconnectFromPeripheral(peripheral)
                         .then((peripheral) => {
                             resolve(thing)
                         })
@@ -92,10 +98,12 @@ class WoT {
                         })
                 })
                 .catch((error) => {
-                    reject(error)
+                    reject(`[WoT_readingDescription] ${error}`)
                 })
         })
 
         return promise
     }
 }
+
+module.exports = WoTAPI;
