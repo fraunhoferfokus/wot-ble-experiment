@@ -27,10 +27,11 @@ class Discover {
     }
 
     startScanning(serviceUUIDs, allowDuplicates){
-        console.log('[discover] scan services ' + serviceUUIDs + allowDuplicates)
+        console.log('[discover] scan services ' + serviceUUIDs + ' ' + allowDuplicates)
 
         noble.startScanning(serviceUUIDs, allowDuplicates, (error) => {
-            if(error)
+            // error has the value true
+            if(!error)
                 console.log('[discover] scanner error', error)
         })
     }
@@ -42,14 +43,17 @@ class Discover {
         let duplicates = allowDuplicates || false
 
         let promise = new Promise((resolve, reject) => {
-            noble.once('discover', (response) => {
-                console.log('[discover] discovered peripherals')
-                noble.stopScanning()
+            this.activateScanner()
+                .then(() => {
+                    noble.once('discover', (response) => {
+                        console.log('[discover] discovered peripherals')
+                        noble.stopScanning()
 
-                resolve([response])
-            })
+                        resolve([response])
+                    })
 
-            this.startScanning(suuids, duplicates)
+                    this.startScanning(suuids, duplicates)
+                })
         })
 
         return promise
@@ -128,7 +132,7 @@ class Discover {
         let promise = new Promise(function(resolve, reject){
             peripheral.disconnect((error) => {
                 if(error)
-                    throw error;
+                    reject(error)
                 else
                     resolve(peripheral)
             })
@@ -159,15 +163,16 @@ class Discover {
         console.log('[discover] discover characteristics ' + (uuids != undefined ? uuids : 'all'))
 
         let characteristicUUIDS = uuids || []
+
         let promise = new Promise((resolve, reject) => {
             service.discoverCharacteristics(characteristicUUIDS, (error, characteristics) => {
-                if(!error){
+                if(!error)
                     resolve(characteristics)
-                }
                 else
                     throw error
 
             })
+
         })
 
         return promise
@@ -234,7 +239,7 @@ class Discover {
                 .then((characteristicValue) => {
 
                     cbor.decodeFirst(characteristicValue, function(error, obj) {
-                        if(error != null)
+                        if(error !== null)
                             throw error
                         else
                             resolve(obj)
@@ -329,6 +334,23 @@ class Discover {
                 console.log('notify response', error)
             }
         })
+    }
+
+    activateScanner(){
+        let promise = new Promise((resolve, reject) => {
+            if(this.state === 'poweredOn'){
+                resolve()
+            }
+            else {
+                this.on('poweredOn', (event) => {
+                    resolve()
+                })
+
+                this.state = 'poweredOn'
+            }
+        })
+
+        return promise
     }
 
     onStartScanner(start) {
