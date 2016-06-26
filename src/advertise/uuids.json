@@ -21,43 +21,43 @@
         "type" : "org.w3c.wot.characteristic.td"
     },
     "ManufacturerCharacteristic" : {
-        "uuid": "7777777777777777-111111111-f010100",
+        "uuid": "7777777777777777111111111f010100",
         "name" : "W3C WoT ManufacturerCharacteristic",
         "type" : "org.w3c.wot.characteristic.manufacturer"
     },
     "SoftwareRevisionCharacteristic" : {
-        "uuid": "7777777777777777-111111111-f010200",
+        "uuid": "7777777777777777111111111f010200",
         "name" : "W3C WoT SoftwareRevisionCharacteristic",
         "type" : "org.w3c.wot.characteristic.softwarerevision"
     },
     "PowerCharacteristic" : {
-        "uuid": "7777777777777777-111111111-f020100",
+        "uuid": "7777777777777777111111111f020100",
         "name" : "W3C WoT PowerCharacteristic",
         "type" : "org.w3c.wot.characteristic.power"
     },
 
     "WoTTDDescriptor" : {
-        "uuid": "7777777777777777-111111111-f030101",
+        "uuid": "7777777777777777111111111f030101",
         "name" : "W3C WoT Characteristic",
         "type" : "org.w3c.wot.descriptor.td"
     },
     "ManufacturerDescriptor" : {
-        "uuid": "7777777777777777-111111111-f010101",
+        "uuid": "7777777777777777111111111f010101",
         "name" : "W3C WoT ManufacturerDescriptor",
         "type" : "org.w3c.wot.descriptor.manufacturer"
     },
     "SoftwareRevisionDescriptor" : {
-        "uuid": "7777777777777777-111111111-f010201",
+        "uuid": "7777777777777777111111111f010201",
         "name" : "W3C WoT ManufacturerDescriptor",
         "type" : "org.w3c.wot.descriptor.manufacturer"
     },
     "StateDescriptor" : {
-        "uuid": "7777777777777777-111111111-f020102",
+        "uuid": "7777777777777777111111111f020102",
         "name" : "W3C WoT ManufacturerDescriptor",
         "type" : "org.w3c.wot.descriptor.manufacturer"
     },
     "PowerDescriptor" : {
-        "uuid": "7777777777777777-111111111-f020101",
+        "uuid": "7777777777777777111111111f020101",
         "name" : "W3C WoT ManufacturerDescriptor",
         "type" : "org.w3c.wot.descriptor.manufacturer"
     }
