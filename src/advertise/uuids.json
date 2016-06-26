@@ -16,7 +16,7 @@
     },
 
     "WoTTDCharacteristic" : {
-        "uuid": "7777777777777777-111111111-f030100",
+        "uuid": "7777777777777777111111111f030100",
         "name" : "W3C WoT Characteristic",
         "type" : "org.w3c.wot.characteristic.td"
     },
