@@ -33,6 +33,7 @@ class ConsumedThing {
             let serviceUUID = ''
             let characteristicUUID = ''
 
+            // TODO: check if peripheral exists
             this.discoverAPI.connectToPeripheral(this._peripheral)
                 .then(() => {
                     return this.checkName(name)

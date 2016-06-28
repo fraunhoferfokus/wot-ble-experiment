@@ -23,6 +23,9 @@ let thingDescription = {
             "outputData": "gatt:string",
             "writable": false,
             "hrefs": ["f200","7777777777777777111111111f010100"]
+            "hrefs": ["f200/7777777777777777111111111f010100"]
+            
+
         },
         {
             "name": "softwareRevision",

@@ -11,7 +11,7 @@ let ConsumedThing = require('./consumedThing')
 *       - discover(ThingFilter)
 *       - consumeDescription(ThingDescription)
 */
-class WoTAPI {
+class WoT {
     constructor(){
         console.log('[WoT_API] WoT object created')
         this.discoverAPI = new Discover()
@@ -82,6 +82,7 @@ class WoTAPI {
                 .then((response) => {
                     console.log('[WoT_API] create ConsumedThing')
 
+                    // TODO: check validate thingDescription
                     response.uris = [`gatt://${peripheral.address}/`]
 
                     return this.consumeDescription(response)
@@ -106,4 +107,4 @@ class WoTAPI {
     }
 }
 
-module.exports = WoTAPI;
+module.exports = new WoT();

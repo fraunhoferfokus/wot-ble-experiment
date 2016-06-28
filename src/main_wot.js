@@ -5,8 +5,7 @@ let wot = require('./wot/wot')
 
 console.log('[main_wot] init wot test calls')
 
-let wotAPI = new wot()
-wotAPI.discover()
+wot.discover()
     .then((things) => {
         console.log('[main_wot] list: ')
 
