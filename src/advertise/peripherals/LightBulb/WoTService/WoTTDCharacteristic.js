@@ -4,45 +4,32 @@
 let bleno = require('bleno')
 let cbor = require('cbor')
 
-/*
-let thingURL = {
-    url: 'www.bla.com/thingDescription'
-}
-*/
-let thingURL = 'http://www.bla.com/thingDescription'
+let thingURL = 'http://www.emptyLink.com/thingDescription'
 
 let thingDescription = {
-    "@context" : "urlToContextDescription",
-    "@type": "LightBulb",
-    "name": "LightBulbTest",
-    "uris": [
-        "uuid?"
-    ],
-    "encodings": ["BLE"],
+    "@context" : ["http://w3c.github.io/wot/w3c-wot-td-context.jsonld"],
+    "@type": "Thing",
+    "name": "LightBulb",
+    "uris": ["gatt://{BLE MAC address}/"],
+    "encodings": ["BLE", "JSON"],
     "properties": [
         {
-            "@id": "Manufacturer",
-            "@type": "Manufacturer",
             "name": "Manufacturer",
-            "outputData": "xsd:string",
+            "outputData": "gatt:string",
             "writable": false,
-            "hrefs": "[uuid?]"
+            "hrefs": ["f200","7777777777777777111111111f010100"]
         },
         {
-            "@id": "softwareRevision",
-            "@type": "softwareRevision",
             "name": "softwareRevision",
-            "outputData": "xsd:string",
+            "outputData": "gatt:string",
             "writable": false,
-            "hrefs": "[uuid?]"
+            "hrefs": ["f200","7777777777777777111111111f010200"]
         },
         {
-            "@id": "PowerStatus",
-            "@type": "PowerStatus",
             "name": "PowerStatus",
-            "valueType": "xsd:boolean",
+            "valueType": "gatt:boolean",
             "writable": true,
-            "hrefs": "[uuid?]"
+            "hrefs": ["f300","7777777777777777111111111f020100"]
         }
     ]
 }

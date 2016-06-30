@@ -20,6 +20,7 @@ discover.on('poweredOn', function(event){
 
             if(Array.isArray(peripherals)){
                 // do something
+                console.log('[main_discover] list of peripherals', peripherals)
             }
             else {
                 console.log('[main_discover] connect to peripheral', peripherals)

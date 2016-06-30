@@ -1,21 +1,21 @@
-### Installation: ###
+### **Installation:** ###
 
-1. install prerequisites (https://www.npmjs.com/package/noble#prerequisites)
-2. npm install
+* install prerequisites (https://www.npmjs.com/package/noble#prerequisites)
+* npm install
 
-### Usage ###
-1. start advertising custom BLE peripheral
+### **Usage** ###
+* start advertising custom BLE peripheral (LightBulb)
 ```sh
-node src/main_advertise
+$ node src/main_advertise
 ```
 
-2. start discovering BLE peripherals
+* start discovering BLE peripherals with WoT-API
 ```sh
-node src/main_discover
+$ node src/main_wot
 ```
 
-3. Alternative: use a BLE Scanner
+    * Alternative: use a BLE Scanner
 
-#### Contributors: ####
-Jonas Rook, 
+#### **Contributors:** ####
+Jonas Rook,
 Louay Bassbouss
