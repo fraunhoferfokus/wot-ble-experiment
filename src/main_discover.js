@@ -2,7 +2,7 @@
 'use strict';
 
 console.log('[main_discover] create discover object')
-let Discover = require('./discover/discover')
+let Discover = require('./consumer/discover')
 let discover = new Discover()
 
 console.log('[main_discover] current power state', discover.state)
