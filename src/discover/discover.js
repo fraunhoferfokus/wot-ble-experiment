@@ -1,21 +1,25 @@
 // to enable es2015 features
 'use strict';
 
-let noble = require('noble');
+const EventEmitter = require('events')
+let noble = require('noble')
+let cbor = require('cbor')
 
 class Discover {
     constructor(){
+        this.emitter = new EventEmitter()
         noble.on('stateChange', this.stateListener.bind(this))
-        noble.once('discover', this.onDiscover.bind(this))
-        noble.on('scanStart', this.onStartScanner);
-        noble.on('scanStop', this.onStopScanner);
+        //noble.once('discover', this.onDiscover.bind(this))
+        noble.on('scanStart', this.onStartScanner)
+        noble.on('scanStop', this.onStopScanner)
     }
 
     stateListener(state){
         console.log("[discover] state changed to", state);
 
         if(state === 'poweredOn'){
-            this.startScanning([], true)
+            //this.startScanning([], true)
+            this.emitter.emit('poweredOn')
         }
         else {
             noble.stopScanning();
@@ -23,36 +27,58 @@ class Discover {
     }
 
     startScanning(serviceUUIDs, allowDuplicates){
-        console.log('[discover] scan services')
+        console.log('[discover] scan services ' + serviceUUIDs + allowDuplicates)
 
-        noble.startScanning(serviceUUIDs, allowDuplicates)
+        noble.startScanning(serviceUUIDs, allowDuplicates, (error) => {
+            if(error)
+                console.log('[discover] scanner error', error)
+        })
+    }
+
+    discoverPeripherals(serviceUUIDs, allowDuplicates){
+        console.log('[discover] discover peripherals')
+
+        let suuids = serviceUUIDs || []
+        let duplicates = allowDuplicates || false
+
+        let promise = new Promise((resolve, reject) => {
+            noble.once('discover', (response) => {
+                console.log('[discover] discovered peripherals')
+                noble.stopScanning()
+
+                resolve(response)
+            })
+
+            this.startScanning(suuids, duplicates)
+        })
+
+        return promise
     }
 
     onDiscover(peripheral) {
-        noble.stopScanning();
-
+        noble.stopScanning()
         this.peripheral = peripheral
         let self = this
 
         //this.printPeripheralInformations(peripheral)
         this.connectToPeripheral(this.peripheral)
-            .then(function(peripheral){
+            .then((peripheral) => {
                 console.log('[discover] connected with ', peripheral.advertisement.localName)
             })
-            .then(function(){
+            .then(() => {
                 return self.discoverEverything(peripheral)
             })
-            .then(function(peripheralObj){
-                let powerCharacteristic = peripheralObj.characteristics[5]
+            .then((peripheralObj) => {
+                let powerCharacteristic = peripheralObj.characteristics[6]
 
                 return self.readCharacteristic(powerCharacteristic)
-                    .then(function(data){
-                        console.log('[discover] read data', data.toString('utf8'))
+                    .then((data) => {
+                        //console.log('[discover] read data', JSON.parse(data.toString('utf8')))
 
                         return powerCharacteristic
                     })
             })
-            .then(function(characteristic){
+            /*.then(function(characteristic){
                 if(characteristic){
                     return self.writeCharacteristic(characteristic, 'off')
                         .then(function(writeAnswer){
@@ -78,14 +104,14 @@ class Discover {
             })
             .then(function(characteristic){
                 self.subscribeCharacteristic(characteristic)
-            })
+            })*/
     }
 
     connectToPeripheral(peripheral){
         console.log('[discover] connect to ' + peripheral.advertisement.localName)
 
         let promise = new Promise(function(resolve, reject){
-            peripheral.connect(function(error){
+            peripheral.connect((error) => {
                 if(error)
                     throw error;
                 else
@@ -97,22 +123,36 @@ class Discover {
     }
 
     discoverServices(peripheral, uuids){
-        console.log('[discoverServices] discover services ' + (uuids != undefined ? uuids : 'all'))
+        console.log('[discover] discover services ' + (uuids != undefined ? uuids : 'all'))
 
         let serviceUUIDS = uuids || []
-        let promise = new Promise(function(resolve, reject){
-            peripheral.discoverServices(serviceUUIDS, function(error, services){
+        let promise = new Promise((resolve, reject) => {
+            peripheral.discoverServices(serviceUUIDS, (error, services) => {
                 if(!error){
-                    services.forEach(function(service){
-                        if(service.uuid != 1800 && service.uuid != 1801)
-                            console.log('[discoverServices] ', service)
-                    })
+                    resolve(services)
                 }
                 else
                     throw error
 
             })
-            //console.log(peripheral)
+        })
+
+        return promise
+    }
+
+    discoverCharacteristics(service, uuids){
+        console.log('[discover] discover characteristics ' + (uuids != undefined ? uuids : 'all'))
+
+        let characteristicUUIDS = uuids || []
+        let promise = new Promise((resolve, reject) => {
+            service.discoverCharacteristics(characteristicUUIDS, (error, characteristics) => {
+                if(!error){
+                    resolve(characteristics)
+                }
+                else
+                    throw error
+
+            })
         })
 
         return promise
@@ -130,13 +170,13 @@ class Discover {
 
                     console.log('[Services]')
                     services.forEach(function(service){
-                        console.log('[S ' + service.uuid + '] ', service.name)
-                        console.log('[S ' + service.uuid + '] ', service.type)
+                        console.log('[S ' + service.uuid + '] name', service.name)
+                        console.log('[S ' + service.uuid + '] type', service.type)
                     })
 
                     console.log('\n[Characteristics]')
                     characteristics.forEach(function(characteristic){
-                        console.log('[C ' + characteristic.uuid + '] ', characteristic.name)
+                        console.log('[C ' + characteristic.uuid + '] name', characteristic.name)
                     })
 
                     let peripheralObj = {}
@@ -158,13 +198,64 @@ class Discover {
     readCharacteristic(characteristic){
         console.log('[discover] read characteristic')
 
-        let promise = new Promise(function(resolve, reject){
-            characteristic.read(function(error, data){
-                if(!error)
+        let promise = new Promise((resolve, reject) => {
+            characteristic.read((error, data) => {
+                if(!error){
                     resolve(data)
+                }
                 else
                     throw error
             })
+        })
+
+        return promise
+    }
+
+    readCborCharacteristic(characteristic){
+        console.log('[discover] read cbor characteristic')
+
+        let promise = new Promise((resolve, reject) => {
+            this.readCharacteristic(characteristic)
+                .then((characteristicValue) => {
+
+                    cbor.decodeFirst(characteristicValue, function(error, obj) {
+                        if(error != null)
+                            throw error
+                        else
+                            resolve(obj)
+                    })
+                })
+                .catch((error) => {
+                    console.log('readCbor ', error)
+                })
+        })
+
+        return promise
+    }
+
+    readThingDescription(characteristic){
+        console.log('[discover] read thing description')
+
+        let promise = new Promise((resolve, reject) => {
+            this.readCborCharacteristic(characteristic)
+                .then((data) => {
+
+                    // check if the data is the TD in json format
+                    // use it earlier, at this time it is already a json object
+                    if(this.isJSON(data))
+                        resolve(data)
+                    else {
+                        this.loadDescriptionFromURL(data)
+                            .then((data) => {
+                                resolve(data)
+                            })
+                    }
+
+
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
         })
 
         return promise
@@ -241,6 +332,27 @@ class Discover {
                     '[peripheral] services \t'  + peripheral.advertisement.serviceUuids + '\n' +
                     '[peripheral] raw object \n'+ peripheral + '\n'
         )
+    }
+
+    loadDescriptionFromURL(url) {
+        let promise = new Promise((resolve, reject) => {
+            reject('LoaderNotImplemented')
+        })
+
+        return promise
+    }
+
+    isJSON(jsonString){
+        let isJSON = false
+
+        if(typeof jsonString != 'string' )
+            isJSON = true
+
+        return isJSON
+    }
+
+    on(event, callback){
+        this.emitter.on(event, callback)
     }
 
     get state(){

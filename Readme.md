@@ -6,10 +6,15 @@
 ### Usage ###
 1. start advertising custom BLE peripheral
 ```sh
-node src/main
+node src/main_advertise
 ```
 
-2. use a BLE Scanner or noble to interact with it
+2. start discovering BLE peripherals
+```sh
+node src/main_discover
+```
+
+3. Alternative: use a BLE Scanner
 
 #### Contributors: ####
 Jonas Rook, 

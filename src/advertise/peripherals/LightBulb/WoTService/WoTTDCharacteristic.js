@@ -1,7 +1,15 @@
 // to enable es2015 features
 'use strict';
 
-let bleno = require('bleno');
+let bleno = require('bleno')
+let cbor = require('cbor')
+
+/*
+let thingURL = {
+    url: 'www.bla.com/thingDescription'
+}
+*/
+let thingURL = 'http://www.bla.com/thingDescription'
 
 let thingDescription = {
     "@context" : "urlToContextDescription",
@@ -12,14 +20,6 @@ let thingDescription = {
     ],
     "encodings": ["BLE"],
     "properties": [
-        {
-            "@id": "ThingDescription",
-            "@type": "ThingDescription",
-            "name": "WoT-ThingDescription",
-            "outputData": "xsd:string",
-            "writable": false,
-            "hrefs": "[uuid?]"
-        },
         {
             "@id": "Manufacturer",
             "@type": "Manufacturer",
@@ -58,7 +58,8 @@ class WoTTDCharacteristic extends bleno.Characteristic {
                     value:'pathToDescription'
                 })
             ],
-            value: JSON.stringify(thingDescription)
+            //value: cbor.encode(thingURL)
+            value: cbor.encode(thingDescription)
         })
     }
 }
