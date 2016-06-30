@@ -4,12 +4,7 @@
 let bleno = require('bleno')
 let cbor = require('cbor')
 
-/*
-let thingURL = {
-    url: 'www.bla.com/thingDescription'
-}
-*/
-let thingURL = 'http://www.bla.com/thingDescription'
+let thingURL = 'http://www.emptyLink.com/thingDescription'
 
 let thingDescription = {
     "@context" : ["http://w3c.github.io/wot/w3c-wot-td-context.jsonld"],
@@ -23,9 +18,6 @@ let thingDescription = {
             "outputData": "gatt:string",
             "writable": false,
             "hrefs": ["f200","7777777777777777111111111f010100"]
-            "hrefs": ["f200/7777777777777777111111111f010100"]
-            
-
         },
         {
             "name": "softwareRevision",
