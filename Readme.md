@@ -31,16 +31,16 @@ The LightBulb peripheral is a custom BLE device to implement and test all functi
 provides three different services (**WoT**-, **Meta**-, **Switch**-Service). The first one is the most important service,
 because it contains the **thing description**. The Meta-Service contains only readable characteristics and is not that important but
 the Switch-Service provides a power characteristic which can be read, written and subscribed.  
-  
+
 * **Thing Description**  
-comming soon
-  
+The thing description contains all properties and events from the ble device. My used description is not completely conform with the definition (hrefs). It will be changed as soon as possible
+
 * **WoT API**  
-comming soon
-  
+The WoT API provides at the moment two functions from the [**API definition**](http://w3c.github.io/wot/current-practices/wot-practices.html#scripting-api ). **discover()** scans for BLE devices with a thing description and returns them. **consumeDescription()** gets a thing description as parameter and returns an object with the type **ConsumedThing**.
+
 * **ConsumedThing**   
-comming soon
-  
+An object of this class provides functions to interact with the ble device. At the moment is only the function **getProperty()** implemented.
+
 #### **Contributors:** ####
 Jonas Rook,
 Louay Bassbouss
