@@ -33,11 +33,18 @@ because it contains the **thing description**. The Meta-Service contains only re
 the Switch-Service provides a power characteristic which can be read, written and subscribed.  
 
 * **Thing Description**  
-The thing description contains all properties and events from the ble device. My used description is not completely conform with the definition (hrefs). It will be changed as soon as possible
+The thing description contains all properties and events from the ble device. My used description is not completely conform with the definition (hrefs). It will be changed as soon as possible.
 
 * **WoT API**  
-The WoT API provides at the moment two functions from the [**API definition**](http://w3c.github.io/wot/current-practices/wot-practices.html#scripting-api ). **discover()** scans for BLE devices with a thing description and returns them. **consumeDescription()** gets a thing description as parameter and returns an object with the type **ConsumedThing**.
+The WoT API provides at the moment two functions from the [**API definition**](http://w3c.github.io/wot/current-practices/wot-practices.html#scripting-api). **discover()** scans for BLE devices with a thing description and returns them. **consumeDescription()** gets a thing description as parameter and returns an object of the type **ConsumedThing**.
 
+    * **discover(ThingFilter)**
+	coming soon
+	
+	* **consumeDescription(ThingDescription)**
+	coming soon
+	
+	
 * **ConsumedThing**   
 An object of this class provides functions to interact with the ble device. At the moment is only the function **getProperty()** implemented.
 
