@@ -59,8 +59,6 @@ The WoT API provides at the moment two functions from the [**API definition**](h
 * **ConsumedThing**   
 An object of this class provides functions to interact with the ble device. At the moment is only the function **getProperty()** implemented.
 
-* [Fraunhofer FOKUS - Competence Center FAME // Future Applications and Media](http://www.fokus.fraunhofer.de/fame)
-* <famecontact@fokus.fraunhofer.de>
 
 #### **Contributors:** ####
 Jonas Rook,
