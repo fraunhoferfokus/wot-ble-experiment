@@ -35,14 +35,18 @@ the Switch-Service provides a power characteristic which can be read, written an
 * **Thing Description**  
 The thing description contains all properties and events from the ble device. My used description is not completely conform with the definition (hrefs). It will be changed as soon as possible.
 
+    **Mapping GATT to WoT**  
+    *coming soon*   
+  
+  
 * **WoT API**  
 The WoT API provides at the moment two functions from the [**API definition**](http://w3c.github.io/wot/current-practices/wot-practices.html#scripting-api). **discover()** scans for BLE devices with a thing description and returns them. **consumeDescription()** gets a thing description as parameter and returns an object of the type **ConsumedThing**.
 
-    * **discover(ThingFilter)**
-	coming soon
+    * **discover(ThingFilter)**  
+	  *coming soon*
 	
-	* **consumeDescription(ThingDescription)**
-	coming soon
+	* **consumeDescription(ThingDescription)**  
+	  *coming soon* 
 	
 	
 * **ConsumedThing**   
