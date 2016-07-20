@@ -1,8 +1,8 @@
 // to enable es2015 features
 'use strict'
 
-let Discover = require('../discover/discover')
-let uuids = require('../advertise/uuids')
+let Discover = require('../consumer/discover')
+let uuids = require('../provider/uuids')
 let ConsumedThing = require('./consumedThing')
 
 /**
@@ -13,7 +13,6 @@ let ConsumedThing = require('./consumedThing')
 */
 class WoT {
     constructor(){
-        console.log('[WoT_API] WoT object created')
         this.discoverAPI = new Discover()
         this.pool = []
     }
@@ -64,7 +63,6 @@ class WoT {
     *   this discovers the WoT-Services and reads the thingDescription
     */
     readThingDescription(peripheral, wotServiceUUID, characteristicUUID){
-        console.log('[WoT_API] readThingDescription from')
         let promise = new Promise((resolve, reject) => {
             this.discoverAPI.connectToPeripheral(peripheral)
                 .then((peripheral) => {

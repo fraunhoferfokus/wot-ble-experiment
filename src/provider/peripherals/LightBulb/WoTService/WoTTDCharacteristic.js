@@ -17,19 +17,19 @@ let thingDescription = {
             "name": "Manufacturer",
             "outputData": "gatt:string",
             "writable": false,
-            "hrefs": ["f200","7777777777777777111111111f010100"]
+            "hrefs": ["f200/7777777777777777111111111f010100"]
         },
         {
             "name": "softwareRevision",
             "outputData": "gatt:string",
             "writable": false,
-            "hrefs": ["f200","7777777777777777111111111f010200"]
+            "hrefs": ["f200/7777777777777777111111111f010200"]
         },
         {
             "name": "PowerStatus",
             "valueType": "gatt:boolean",
             "writable": true,
-            "hrefs": ["f300","7777777777777777111111111f020100"]
+            "hrefs": ["f300/7777777777777777111111111f020100"]
         }
     ]
 }

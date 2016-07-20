@@ -6,15 +6,35 @@ let wot = require('./wot/wot')
 console.log('[main_wot] init wot test calls')
 
 wot.discover()
-    .then((things) => {
+    .then(things => {
         return things[0]
     })
-    .then((thing) => {
-        thing.getProperty('softwareRevision')
-            .then((response) => {
+
+    // get characteristic
+    .then(thing => {
+        return thing.getProperty('PowerStatus')
+            .then(response => {
+                console.log(`[main_wot] value 1: ${response}`)
+                return thing
+            })
+    })
+
+    // set characteristic
+    .then(thing => {
+        return thing.setProperty('PowerStatus', 'off')
+            .then(response => {
+                console.log(`[main_wot] value written`)
+                return thing
+            })
+    })
+
+    // get characteristic
+    .then(thing => {
+        return thing.getProperty('PowerStatus')
+            .then(response => {
                 console.log(`[main_wot] value 1: ${response}`)
             })
     })
-    .catch((error) => {
+    .catch(error => {
         console.log(error)
     })

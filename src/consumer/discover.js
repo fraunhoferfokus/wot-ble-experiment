@@ -9,7 +9,6 @@ class Discover {
     constructor(){
         this.emitter = new EventEmitter()
         noble.on('stateChange', this.stateListener.bind(this))
-        //noble.once('discover', this.onDiscover.bind(this))
         noble.on('scanStart', this.onStartScanner)
         noble.on('scanStop', this.onStopScanner)
     }
@@ -82,33 +81,6 @@ class Discover {
                         return powerCharacteristic
                     })
             })
-            /*.then(function(characteristic){
-                if(characteristic){
-                    return self.writeCharacteristic(characteristic, 'off')
-                        .then(function(writeAnswer){
-                            console.log('writeAnswer', writeAnswer)
-                            if(writeAnswer == 'done'){
-                                console.log('[discover] value written')
-
-                                return characteristic
-                            }
-                            else {
-                                console.log('undefined')
-                                return undefined
-                            }
-                        })
-                }
-            })
-            .then(function(characteristic){
-                return self.readCharacteristic(characteristic)
-                    .then(function(data){
-                        console.log('[discover] read new data', data.toString('utf8'))
-                        return characteristic
-                    })
-            })
-            .then(function(characteristic){
-                self.subscribeCharacteristic(characteristic)
-            })*/
     }
 
     connectToPeripheral(peripheral){
@@ -286,7 +258,6 @@ class Discover {
 
         let promise = new Promise(function(resolve, reject){
             characteristic.write(new Buffer(value), false, (function(error, data){
-                console.log('write call', data)
                 if(error)
                     throw error
                 else
