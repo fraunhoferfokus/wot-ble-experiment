@@ -1,0 +1,19 @@
+{
+  "name": "pi_web_controller",
+  "authors": [
+    "Jonas Rook <jonas.rook@fokus.fraunhofer.de>",
+    "Louay Bassbouss <louay.bassbouss@fokus.fraunhofer.de>"
+  ],
+  "version": "0.1.1",
+  "description": "This project gives the possibility to interact with the PI directly",
+  "license": "...",
+  "scripts": {
+    "start": "http-server ./ -o"
+  },
+  "dependencies": {
+    "express": "^4.14.0",
+    "pi-gpio": "0.0.8",
+    "socket.io": "^1.4.8"
+  },
+  "devDependencies": {}
+}

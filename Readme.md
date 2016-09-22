@@ -4,17 +4,17 @@
 * npm install
 
 ### **Usage** ###
-* start advertising custom BLE peripheral (LightBulb)
+* start advertising custom BLE peripheral (LightBulb || PiGpio)
 ```sh
-$ node src/main_advertise
+$ node src/examples/provider_advertiseThing
 ```
 
 * start discovering BLE peripherals with the WoT-API
 ```sh
-$ node src/main_wot
+$ node src/examples/consumer_getThings
 ```
 
-    * Alternative: use a BLE Scanner
+* the src/examples folder contains several files to demonstrate the basic usage for both peripherals.
 
 ### **Explanations** ###
 In this section I will explain some parts of this project. The project is still under
@@ -28,7 +28,7 @@ communcation between the user and the peripheral. The BLE devices communicates o
     * **discover.js (noble)**  
 	  In this file, I have implemented the functions from the noble API, you can find the list of functions [**here**](https://github.com/sandeepmistry/bleno#actions).
 	  These functions allows me to discover BLE devices via bluetooth and to interact with them.
-	    
+
 	* **lightBulbPeripheral.js (bleno)**
 	  Currently there is no separated file like discover.js which provides functions to use the bleno API. Each Peripheral has to advertise itself.  
 
@@ -42,7 +42,7 @@ the Switch-Service provides a power characteristic which can be read, written an
 The thing description contains all properties and events from the BLE device. At the moment it contains only the properties but it will be extended with events for subscribtions.
 
     * **LightBulb Thing Description**
-    
+
     ```sh
         let thingDescription = {
             "@context" : ["http://w3c.github.io/wot/w3c-wot-td-context.jsonld"],
@@ -72,14 +72,14 @@ The thing description contains all properties and events from the BLE device. At
             ]
         }
     ```
-    
+
     This is the latest version of the used thing-description. The **uri** will be set dynamically because the mac addresses of the
     virtual devices aren't contstant. The "hrefs"-value contains two uuids, the first one comes from the service which contains the characteristic/property
     and the second one is the uuid of the characteristic.  
-      
+
     **Service uuids**  
-    
-    In my example I have three different services with the uuids f100(WoT Service), f200(Meta Service), f300(Power Service). 
+
+    In my example I have three different services with the uuids f100(WoT Service), f200(Meta Service), f300(Power Service).
     Normally 16-bit-uuids are allocated for listed devices ([Bluetooth specifications](https://www.bluetooth.com/specifications/assigned-numbers/16-bit-uuids-for-sdos)).
     Uuids with a length of 128-bit can be used for custom devices, but the API used for advertising ble-devices only allows to advertise one service with 128-bit
     with two additional services using a 16-bit uuid.   
@@ -88,43 +88,49 @@ The thing description contains all properties and events from the BLE device. At
     filler, I used the last part "f020100" to list my uuids. The 'f' just marks the beginning of the uuid, the first two numbers (02) are counting the current service, the
     next two numbers stand for the characteristic and the last numbers symbolize the descriptors. In this example the uuid represents the first characteristic of the second service.
     This makes it easier for me to find out to whom it belongs to.  
-       
-    
-    
+
+
+
     **Mapping WoT to GATT**
 
     With the WoT API it's sufficient to call one single function to get properties or subscribe to events. But in the back there are some several steps to take.
-    These steps are similar for each function: 
-      
+    These steps are similar for each function:
+
     *  discover peripheral [if necessary, see consumeDescription]
     *  connect to peripheral
     *  discover service(uuid)
-    *  discover characteristic(uuid) 
+    *  discover characteristic(uuid)
     *  **your operation**  
        *this part depends on the called function*  
        e.g. **getValue(), setValue(), subscribe()**
     *  disconnect from peripheral  
        this is necessary so that the peripheral can advertise itself again, otherwise it is blocked and can't be used.
-    
-  
+
+
 * **WoT API**  
 At the moment the WoT API provides two functions from the [**API definition**](http://w3c.github.io/wot/current-practices/wot-practices.html#scripting-api). **discover()** scans for BLE devices with a thing description and returns them. **consumeDescription()** gets a thing description as parameter and returns an object of the type **ConsumedThing**.
 
     * **discover(ThingFilter)**  
-    *coming soon*
-    
+      *coming soon*
+
     * **consumeDescription(ThingDescription)**  
-      *coming soon* 
-    
-    
+      *coming soon*
+
+
 * **ConsumedThing**   
 An object of this class provides functions to interact with the BLE device.
 
     * **getProperty(name)**  
 	  *coming soon*
-	
+
 	* **setProperty(name, value)**  
       *coming soon*
+
+    * **addListener(eventName, listener)**  
+      *coming soon*
+
+    * **removeListener(eventName, listener)**  
+      *coming soon*  
 
 #### **Contributors:** ####
 Louay Bassbouss,
